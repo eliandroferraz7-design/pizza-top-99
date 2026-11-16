@@ -156,7 +156,7 @@ input.err{border-color:var(--tomato);background:#fff3f0}
         <div class="badges">
           <span class="badge">Só delivery</span>
           <span class="badge">Entrega <b>R$ 3,00</b></span>
-          <span class="badge">Terça a sábado, <b>19h30 às 00h</b></span>
+          <span class="badge">Terça a sábado, <b>19h às 23h</b></span>
         </div>
         <a class="cta" href="#cardapio">Ver cardápio</a>
       </div>
@@ -251,7 +251,6 @@ input.err{border-color:var(--tomato);background:#fff3f0}
         <select id="pag">
           <option value="Pix">Pix</option>
           <option value="Dinheiro">Dinheiro na entrega</option>
-          <option value="Cartão">Cartão na entrega</option>
         </select>
       </label>
       <label id="trocoBox" hidden>Troco para quanto?
@@ -275,7 +274,8 @@ input.err{border-color:var(--tomato);background:#fff3f0}
   var PIX = '93991168858';
   var FEE = 3;
   var EXTRA3 = 5; // adicional para pizza de 3 sabores
-  var OPEN_MIN = 19*60+30; // abre 19h30, fecha 00h
+  var OPEN_MIN = 19*60; // abre 19h
+  var CLOSE_MIN = 23*60; // fecha 23h
   var SIZES = ['Média','Grande','Família'];
   var MAXF = [2,3,3]; // máximo de sabores por tamanho
   var MENU = [
@@ -315,21 +315,21 @@ input.err{border-color:var(--tomato);background:#fff3f0}
   }
   function isOpen(){
     var n = nowBelem();
-    return OPEN_DAYS.indexOf(n.wd) > -1 && n.min >= OPEN_MIN;
+    return OPEN_DAYS.indexOf(n.wd) > -1 && n.min >= OPEN_MIN && n.min < CLOSE_MIN;
   }
   function nextOpening(){
     var n = nowBelem();
-    if(OPEN_DAYS.indexOf(n.wd) > -1 && n.min < OPEN_MIN) return 'hoje às 19h30';
+    if(OPEN_DAYS.indexOf(n.wd) > -1 && n.min < OPEN_MIN) return 'hoje às 19h';
     for(var i=1;i<=7;i++){
       var d = (n.wd+i)%7;
-      if(OPEN_DAYS.indexOf(d) > -1) return (i===1 ? 'amanhã' : DIAS[d]) + ' às 19h30';
+      if(OPEN_DAYS.indexOf(d) > -1) return (i===1 ? 'amanhã' : DIAS[d]) + ' às 19h';
     }
     return '';
   }
   function paintStatus(){
     var o = isOpen();
     $('status').className = 'status' + (o?' open':'');
-    $('statusTxt').textContent = o ? 'Aberto agora · até 00h' : 'Fechado · abrimos '+nextOpening();
+    $('statusTxt').textContent = o ? 'Aberto agora · até 23h' : 'Fechado · abrimos '+nextOpening();
     $('closedMsg').textContent = 'Estamos fechados agora. Abrimos '+nextOpening()+' (terça a sábado).';
     $('closedWarn').classList.toggle('show', !o);
   }
