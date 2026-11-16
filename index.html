@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Pizza Top – Peça pelo WhatsApp</title>
+<meta name="description" content="Cardápio digital da Delivery Pizza Top. Escolha o sabor e o tamanho e envie o pedido direto pelo WhatsApp. Taxa de entrega R$ 3,00.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0b0a'/%3E%3Cpath d='M10 18q22-10 44 0L32 56z' fill='%23d9a441'/%3E%3Ccircle cx='27' cy='26' r='4' fill='%23d93a24'/%3E%3Ccircle cx='38' cy='30' r='4' fill='%23d93a24'/%3E%3Ccircle cx='31' cy='40' r='3.5' fill='%23d93a24'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0b0a; --panel:#161412; --line:#2c2823; --ink:#f3e9d6; --mute:#a39a8a;
+  --tomato:#d93a24; --gold:#d9a441; --ok:#6fbf73;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:88px}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.mono{font-family:var(--mono);font-size:13px;letter-spacing:.02em}
+
+/* topo */
+header.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:20px;letter-spacing:.01em;text-decoration:none}
+.brand span{color:var(--tomato)}
+.status{display:flex;align-items:center;gap:8px;color:var(--mute)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--mute)}
+.status.open .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(111,191,115,.18)}
+.status.open{color:var(--ink)}
+
+/* hero */
+.hero{padding:64px 0 48px}
+.hero h1{font-size:clamp(44px,9.5vw,92px);line-height:.98;font-weight:700;letter-spacing:-.025em;max-width:11ch}
+.hero p{margin-top:22px;color:var(--mute);max-width:46ch;font-size:19px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.badge{border:1px solid var(--line);padding:7px 12px;border-radius:999px;color:var(--ink)}
+.badge b{color:var(--gold);font-weight:500}
+.cta{display:inline-block;margin-top:32px;background:var(--tomato);color:#fff;text-decoration:none;padding:15px 26px;border-radius:4px;font-weight:700;border:0;cursor:pointer}
+.cta:hover{background:#e84a33}
+
+/* ticker */
+.ticker{border-block:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:11px 0;color:var(--gold)}
+.ticker div{display:inline-block;padding-left:100%;animation:tk 32s linear infinite}
+@keyframes tk{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.ticker div{animation:none;padding-left:0}}
+
+/* cardapio */
+.menu{padding:56px 0 24px}
+.menu-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px;margin-bottom:8px}
+.menu-head h2{font-size:clamp(30px,5vw,44px);letter-spacing:-.015em;line-height:1.05}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{background:none;border:0;padding:11px 18px;cursor:pointer;font-family:var(--mono);font-size:13px;color:var(--mute)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#1a1205}
+.group{margin-top:40px}
+.group h3{font-size:22px;font-weight:500;font-style:italic;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--gold)}
+.row{display:flex;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.row .name{flex:1;font-size:21px;font-weight:500}
+.row .price{font-family:var(--mono);font-size:15px;color:var(--ink);min-width:84px;text-align:right}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px}
+.step button{width:40px;height:40px;background:none;border:0;cursor:pointer;font-size:20px;line-height:1}
+.step button:hover{background:var(--panel)}
+.step output{min-width:28px;text-align:center;font-family:var(--mono)}
+.add{background:none;border:1px solid var(--tomato);color:var(--ink);padding:0 16px;height:42px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:13px}
+.add:hover{background:var(--tomato)}
+.note{margin-top:22px;color:var(--mute)}
+
+/* barra do pedido */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(12,11,10,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px))}
+.bar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.bar .sum{color:var(--mute)}
+.bar .sum b{color:var(--ink);font-weight:500}
+.bar .cta{margin:0;padding:13px 22px}
+.bar .cta[disabled]{background:var(--line);color:var(--mute);cursor:not-allowed}
+
+/* pedido */
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.66);display:none;justify-content:flex-end}
+.sheet.show{display:flex}
+.panel{background:var(--bg);width:min(520px,100%);height:100%;overflow-y:auto;padding:22px 22px calc(28px + env(safe-area-inset-bottom,0px));border-left:1px solid var(--line)}
+.panel header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.panel h2{font-size:30px;letter-spacing:-.01em}
+.x{background:none;border:1px solid var(--line);width:40px;height:40px;border-radius:6px;cursor:pointer;font-size:18px}
+.line{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.line .t{flex:1}
+.line .t small{display:block;color:var(--mute);font-family:var(--mono);font-size:12px}
+.line .p{font-family:var(--mono);font-size:14px;min-width:78px;text-align:right}
+.empty{color:var(--mute);padding:22px 0}
+.totals{margin:18px 0 6px;font-family:var(--mono);font-size:14px}
+.totals div{display:flex;justify-content:space-between;padding:4px 0;color:var(--mute)}
+.totals .grand{color:var(--ink);font-size:17px;border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+.totals .grand span:last-child{color:var(--gold)}
+form{margin-top:22px;display:grid;gap:14px}
+label{display:grid;gap:6px;color:var(--mute);font-size:14px}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 13px;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
+.err{border-color:var(--tomato)!important}
+.pix{border:1px dashed var(--gold);border-radius:6px;padding:14px;display:none;gap:10px}
+.pix.show{display:grid}
+.pix .key{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pix .key strong{font-family:var(--mono);font-size:19px;color:var(--gold);font-weight:500}
+.copy{background:none;border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:8px 14px;cursor:pointer;font-family:var(--mono);font-size:13px}
+.copy:hover{background:var(--gold);color:#1a1205}
+.pix p{font-size:14px;color:var(--mute)}
+.send{background:#1f9d55;color:#fff;border:0;border-radius:6px;padding:16px;cursor:pointer;font-weight:700;font-size:18px}
+.send:hover{background:#25b565}
+.warn{display:none;border-left:3px solid var(--tomato);padding:8px 12px;color:var(--ink);font-size:15px}
+.warn.show{display:block}
+
+
+[hidden]{display:none!important}
+.add[aria-pressed="true"]{background:var(--tomato);border-color:var(--tomato);color:#fff}
+.builder{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;margin-top:28px;background:var(--panel);border:1px solid var(--gold);border-radius:6px;padding:14px 16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.b-info{display:grid;gap:2px;min-width:0}
+.b-info strong{font-weight:700;font-size:18px}
+.b-info span{color:var(--gold);font-size:16px}
+.b-act{display:flex;align-items:center;gap:16px}
+.b-act .cta{margin:0;padding:12px 18px}
+.b-act .mono{font-size:15px}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:34px 0 40px;color:var(--mute);font-size:15px}
+footer .mono{display:block;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#topo">Delivery Pizza <span>Top</span></a>
+    <div class="status mono" id="status" role="status"><i class="dot"></i><span id="statusTxt">Verificando…</span></div>
+  </header>
+
+  <section class="hero" id="topo">
+    <h1>Sabor que conquista, entrega que chega.</h1>
+    <p>Escolha o sabor, o tamanho e mande o pedido direto pelo WhatsApp. Sem cadastro, sem aplicativo.</p>
+    <div class="badges mono">
+      <span class="badge">Só delivery</span>
+      <span class="badge">Taxa de entrega <b>R$ 3,00</b></span>
+      <span class="badge">Terça a sábado, <b>19h30 às 00h</b></span>
+    </div>
+    <a class="cta" href="#cardapio">Ver cardápio</a>
+  </section>
+</div>
+
+<div class="ticker mono" aria-hidden="true"><div>Pizza sempre quentinha &nbsp;/&nbsp; Ingredientes selecionados &nbsp;/&nbsp; Qualidade em cada fatia &nbsp;/&nbsp; Pizza sempre quentinha &nbsp;/&nbsp; Ingredientes selecionados &nbsp;/&nbsp; Qualidade em cada fatia &nbsp;/&nbsp;</div></div>
+
+<main class="wrap">
+  <section class="menu" id="cardapio" aria-labelledby="h-menu">
+    <div class="menu-head">
+      <h2 id="h-menu">Cardápio</h2>
+      <div class="seg" role="group" aria-label="Tamanho da pizza" id="sizes"></div>
+    </div>
+    <p class="note">Média leva até 2 sabores. Grande e Família levam até 3. Toque nos sabores para montar sua pizza; com mais de um sabor, vale o preço do sabor mais caro.</p>
+    <p class="note" id="hint" role="status" aria-live="polite"></p>
+    <div id="groups"></div>
+    <div class="builder" id="builder" hidden>
+      <div class="b-info"><strong id="bTitle"></strong><span id="bFlavors"></span></div>
+      <div class="b-act"><span class="mono" id="bPrice"></span><button type="button" class="cta" id="bAdd">Adicionar ao pedido</button></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Delivery Pizza Top · Oriximiná, Pará
+    <span class="mono">WhatsApp (93) 99116-8858 · Pix: mesmo número</span>
+  </div>
+</footer>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="sum mono" id="barSum">Seu pedido está vazio</div>
+    <button class="cta" id="openCart" disabled>Ver pedido</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="h-cart">
+    <header>
+      <h2 id="h-cart">Seu pedido</h2>
+      <button class="x" id="closeCart" aria-label="Fechar pedido">✕</button>
+    </header>
+
+    <div id="lines"></div>
+
+    <div class="totals mono">
+      <div><span>Subtotal</span><span id="tSub">R$ 0,00</span></div>
+      <div><span>Taxa de entrega</span><span id="tFee">R$ 3,00</span></div>
+      <div class="grand"><span>Total</span><span id="tTot">R$ 0,00</span></div>
+    </div>
+
+    <p class="warn" id="closedWarn"><span id="closedMsg">Estamos fechados agora.</span> Você pode enviar o pedido e ele será respondido quando abrirmos.</p>
+
+    <form id="form" novalidate>
+      <label>Seu nome
+        <input id="nome" autocomplete="name" required>
+      </label>
+      <label>Rua e número
+        <input id="rua" autocomplete="street-address" required>
+      </label>
+      <label>Bairro
+        <input id="bairro" required>
+      </label>
+      <label>Ponto de referência (opcional)
+        <input id="ref">
+      </label>
+      <label>Forma de pagamento
+        <select id="pag">
+          <option value="Pix">Pix</option>
+          <option value="Dinheiro">Dinheiro na entrega</option>
+          <option value="Cartão">Cartão na entrega</option>
+        </select>
+      </label>
+      <label id="trocoBox" hidden>Troco para quanto?
+        <input id="troco" inputmode="decimal" placeholder="Ex.: 100">
+      </label>
+      <div class="pix show" id="pixBox">
+        <div class="key"><strong>(93) 99116-8858</strong><button type="button" class="copy" id="copyPix">Copiar chave Pix</button></div>
+        <p>A chave Pix é o número de telefone. Pague o total acima e envie o comprovante na conversa do WhatsApp.</p>
+      </div>
+      <label>Observações (opcional)
+        <textarea id="obs" rows="3" placeholder="Ex.: sem cebola, cortar em 12 pedaços"></textarea>
+      </label>
+      <button type="submit" class="send">Enviar pedido pelo WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  var WHATS = '5593991168858';
+  var PIX = '93991168858';
+  var FEE = 3;
+  var OPEN_MIN = 19*60+30; // abre 19h30, fecha 00h
+  var SIZES = ['Média','Grande','Família'];
+  var MAXF = [2,3,3]; // máximo de sabores por tamanho
+  var MENU = [
+    {g:'Sabores especiais', p:[45,55,65], items:['Filé','Frango Catupiry','Três Queijos','Bacon']},
+    {g:'Sabores tradicionais', p:[40,50,60], items:['Portuguesa','Mussarela','Calabresa']}
+  ];
+  var size = 1;
+  var picked = [];
+  var cart = {}; // chave "tamanho|sabores" -> {size,flavors,price,qty}
+
+  var $ = function(id){return document.getElementById(id)};
+  var brl = function(n){return 'R$ ' + n.toFixed(2).replace('.',',')};
+
+  try{
+    var saved = JSON.parse(localStorage.getItem('ptop-cart-v2')||'{}');
+    if(saved && typeof saved==='object'){
+      Object.keys(saved).forEach(function(k){
+        var it = saved[k];
+        if(it && Array.isArray(it.flavors) && SIZES.indexOf(it.size)>-1 && it.qty>0) cart[k] = it;
+      });
+    }
+  }catch(e){}
+  function persist(){ try{ localStorage.setItem('ptop-cart-v2', JSON.stringify(cart)); }catch(e){} }
+
+  /* status aberto/fechado (horário de Oriximiná; funciona de terça a sábado) */
+  var DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  var OPEN_DAYS = [2,3,4,5,6]; // terça a sábado
+  function nowBelem(){
+    var parts = new Intl.DateTimeFormat('en-US',{timeZone:'America/Belem',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+    var get = function(t){return parts.find(function(p){return p.type===t}).value};
+    var wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(get('weekday'));
+    return {wd:wd, min:(+get('hour')%24)*60 + +get('minute')};
+  }
+  function isOpen(){
+    var n = nowBelem();
+    return OPEN_DAYS.indexOf(n.wd) > -1 && n.min >= OPEN_MIN;
+  }
+  function nextOpening(){
+    var n = nowBelem();
+    if(OPEN_DAYS.indexOf(n.wd) > -1 && n.min < OPEN_MIN) return 'hoje às 19h30';
+    for(var i=1;i<=7;i++){
+      var d = (n.wd+i)%7;
+      if(OPEN_DAYS.indexOf(d) > -1) return (i===1 ? 'amanhã' : DIAS[d]) + ' às 19h30';
+    }
+    return '';
+  }
+  function paintStatus(){
+    var o = isOpen();
+    $('status').className = 'status mono' + (o?' open':'');
+    $('statusTxt').textContent = o ? 'Aberto agora · até 00h' : 'Fechado · abrimos '+nextOpening();
+    $('closedMsg').textContent = 'Estamos fechados agora. Abrimos '+nextOpening()+' (terça a sábado).';
+    $('closedWarn').classList.toggle('show', !o);
+  }
+  paintStatus(); setInterval(paintStatus, 60000);
+
+  function priceOf(f,s){
+    for(var i=0;i<MENU.length;i++) if(MENU[i].items.indexOf(f)>-1) return MENU[i].p[s];
+    return 0;
+  }
+  function say(t){ $('hint').textContent = t || ''; }
+
+  /* tamanhos */
+  function paintSizes(){
+    $('sizes').innerHTML = SIZES.map(function(s,i){
+      return '<button type="button" data-i="'+i+'" aria-pressed="'+(i===size)+'">'+s+'</button>';
+    }).join('');
+  }
+  $('sizes').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    size = +b.dataset.i;
+    var msg = '';
+    if(picked.length > MAXF[size]){
+      picked = picked.slice(0, MAXF[size]);
+      msg = 'Pizza '+SIZES[size]+' leva até '+MAXF[size]+' sabores. Mantive os '+MAXF[size]+' primeiros.';
+    }
+    say(msg); paintSizes(); paintMenu(); paintBuilder();
+  });
+
+  /* cardápio */
+  function paintMenu(){
+    $('groups').innerHTML = MENU.map(function(g){
+      return '<div class="group"><h3>'+g.g+'</h3>' + g.items.map(function(f){
+        var on = picked.indexOf(f) > -1;
+        return '<div class="row"><span class="name">'+f+'</span><span class="price">'+brl(g.p[size])+'</span>'+
+          '<button type="button" class="add" data-f="'+f+'" aria-pressed="'+on+'">'+(on?'Escolhido':'Escolher')+'</button></div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+  $('groups').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-f]'); if(!b) return;
+    var f = b.dataset.f, i = picked.indexOf(f);
+    if(i > -1){ picked.splice(i,1); say(''); }
+    else if(picked.length >= MAXF[size]){
+      say('Pizza '+SIZES[size]+' leva até '+MAXF[size]+' sabores. Retire um sabor para escolher outro.');
+      return;
+    } else { picked.push(f); say(''); }
+    paintMenu(); paintBuilder();
+  });
+
+  /* montagem da pizza */
+  function pickedPrice(){
+    return Math.max.apply(null, picked.map(function(f){return priceOf(f,size)}));
+  }
+  function paintBuilder(){
+    var b = $('builder');
+    if(!picked.length){ b.hidden = true; return; }
+    b.hidden = false;
+    $('bTitle').textContent = 'Pizza '+SIZES[size]+' · '+picked.length+' de '+MAXF[size]+' sabores';
+    $('bFlavors').textContent = picked.join(' + ');
+    $('bPrice').textContent = brl(pickedPrice());
+  }
+  $('bAdd').onclick = function(){
+    if(!picked.length) return;
+    var k = SIZES[size]+'|'+picked.slice().sort().join('+');
+    var it = cart[k] || {size:SIZES[size], flavors:picked.slice(), price:pickedPrice(), qty:0};
+    it.qty += 1; cart[k] = it;
+    picked = []; persist();
+    say('Pizza adicionada ao pedido. Escolha outra ou toque em Ver pedido.');
+    paintMenu(); paintBuilder(); paintCart();
+  };
+
+  /* carrinho */
+  function totals(){
+    var n=0, sub=0;
+    Object.keys(cart).forEach(function(k){ n+=cart[k].qty; sub+=cart[k].qty*cart[k].price; });
+    return {n:n, sub:sub, tot: n? sub+FEE : 0};
+  }
+  function paintCart(){
+    var t = totals();
+    $('barSum').innerHTML = t.n ? '<b>'+t.n+(t.n>1?' pizzas':' pizza')+'</b> · '+brl(t.tot)+' com entrega' : 'Seu pedido está vazio';
+    $('openCart').disabled = !t.n;
+    $('tSub').textContent = brl(t.sub);
+    $('tFee').textContent = brl(t.n?FEE:0);
+    $('tTot').textContent = brl(t.tot);
+    var ks = Object.keys(cart);
+    $('lines').innerHTML = ks.length ? ks.map(function(k){
+      var it = cart[k];
+      var n = it.flavors.length;
+      return '<div class="line"><div class="t">Pizza '+it.size+'<small>'+it.flavors.join(' + ')+(n>1?' ('+n+' sabores)':'')+' · '+brl(it.price)+'</small></div>'+
+        '<div class="step"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Remover uma pizza">−</button><output>'+it.qty+'</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Adicionar mais uma pizza">+</button></div>'+
+        '<span class="p">'+brl(it.qty*it.price)+'</span></div>';
+    }).join('') : '<p class="empty">Nenhuma pizza ainda. Volte ao cardápio e escolha seus sabores.</p>';
+    if(!ks.length) closeCart();
+  }
+  $('lines').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-k]'); if(!b) return;
+    var it = cart[b.dataset.k]; if(!it) return;
+    it.qty += +b.dataset.d;
+    if(it.qty <= 0) delete cart[b.dataset.k];
+    persist(); paintCart();
+  });
+
+  function openCart(){ $('sheet').classList.add('show'); $('sheet').setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+  function closeCart(){ $('sheet').classList.remove('show'); $('sheet').setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  $('openCart').onclick = openCart;
+  $('closeCart').onclick = closeCart;
+  $('sheet').addEventListener('click', function(e){ if(e.target===$('sheet')) closeCart(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeCart(); });
+
+  /* pagamento */
+  $('pag').addEventListener('change', function(){
+    var v = $('pag').value;
+    $('pixBox').classList.toggle('show', v==='Pix');
+    $('trocoBox').hidden = v!=='Dinheiro';
+  });
+  $('copyPix').onclick = function(){
+    var done = function(){ $('copyPix').textContent = 'Chave copiada'; setTimeout(function(){ $('copyPix').textContent='Copiar chave Pix'; },2200); };
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = PIX; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(PIX).then(done, fallback); } else fallback();
+  };
+
+  /* envio para o WhatsApp */
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var bad = null;
+    ['nome','rua','bairro'].forEach(function(id){
+      var el = $(id), empty = !el.value.trim();
+      el.classList.toggle('err', empty); if(empty && !bad) bad = el;
+    });
+    if(bad){ bad.focus(); return; }
+    var t = totals(); if(!t.n) return;
+
+    var L = ['*Novo pedido – Delivery Pizza Top*',''];
+    Object.keys(cart).forEach(function(k){
+      var it = cart[k], n = it.flavors.length;
+      L.push(it.qty+'x Pizza '+it.size+(n>1?' ('+n+' sabores)':'')+': '+it.flavors.join(' + ')+' – '+brl(it.qty*it.price));
+    });
+    L.push('', 'Subtotal: '+brl(t.sub), 'Taxa de entrega: '+brl(FEE), '*Total: '+brl(t.tot)+'*', '');
+    L.push('*Nome:* '+$('nome').value.trim());
+    L.push('*Endereço:* '+$('rua').value.trim()+', '+$('bairro').value.trim());
+    if($('ref').value.trim()) L.push('*Referência:* '+$('ref').value.trim());
+    var pag = $('pag').value;
+    L.push('*Pagamento:* '+pag);
+    if(pag==='Dinheiro' && $('troco').value.trim()) L.push('*Troco para:* R$ '+$('troco').value.trim());
+    if(pag==='Pix') L.push('(Envio o comprovante do Pix nesta conversa)');
+    if($('obs').value.trim()) L.push('*Observações:* '+$('obs').value.trim());
+
+    var url = 'https://wa.me/'+WHATS+'?text='+encodeURIComponent(L.join('\n'));
+    window.open(url, '_blank', 'noopener');
+  });
+
+  paintSizes(); paintMenu(); paintBuilder(); paintCart();
+})();
+</script>
+</body>
+</html>
