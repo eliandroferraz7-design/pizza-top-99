@@ -194,6 +194,7 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     </ul>
     <p class="note" id="hint" role="status" aria-live="polite"></p>
     <div id="groups"></div>
+    <div id="drinks"></div>
     <div class="builder" id="builder" hidden>
       <svg id="bPie" viewBox="0 0 100 100" aria-hidden="true"></svg>
       <div class="b-info"><strong id="bTitle"></strong><span id="bFlavors"></span></div>
@@ -205,8 +206,9 @@ input.err{border-color:var(--tomato);background:#fff3f0}
 <footer>
   <div class="wrap">
     <strong>Delivery Pizza Top</strong>
-    Oriximiná, Pará<br>
-    WhatsApp (93) 99116-8858 · Pix: mesmo número
+    Oriximiná, Pará · Terça a sábado, 19h às 23h<br>
+    WhatsApp: (93) 99116-8858<br>
+    Pagamento: Pix ou dinheiro na entrega
   </div>
 </footer>
 
@@ -257,8 +259,8 @@ input.err{border-color:var(--tomato);background:#fff3f0}
         <input id="troco" inputmode="decimal" placeholder="Ex.: 100">
       </label>
       <div class="pix show" id="pixBox">
-        <div class="key"><strong>(93) 99116-8858</strong><button type="button" class="copy" id="copyPix">Copiar chave Pix</button></div>
-        <p>A chave Pix é o número de telefone. Pague o total acima e envie o comprovante na conversa do WhatsApp.</p>
+        <div class="key"><div><small style="display:block;font-size:13px;color:#2f5d44">Chave Pix (celular)</small><strong>(93) 99116-8858</strong></div><button type="button" class="copy" id="copyPix">Copiar chave</button></div>
+        <p>Copie a chave, pague o total no app do seu banco e envie o comprovante na conversa do WhatsApp.</p>
       </div>
       <label>Observações (opcional)
         <textarea id="obs" rows="3" placeholder="Ex.: sem cebola, cortar em 12 pedaços"></textarea>
@@ -282,6 +284,11 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     {g:'Sabores especiais', p:[45,55,65], items:['Filé','Frango Catupiry','Três Queijos','Bacon']},
     {g:'Sabores tradicionais', p:[40,50,60], items:['Portuguesa','Mussarela','Calabresa']}
   ];
+  var DRINKS = [
+    {n:'Coca-Cola 2 L', p:15}, {n:'Fanta Laranja 2 L', p:15}, {n:'Fanta Uva 2 L', p:15},
+    {n:'Coca-Cola 1 L', p:10}, {n:'Fanta Laranja 1 L', p:10}, {n:'Fanta Uva 1 L', p:10},
+    {n:'Guaraná 1 L', p:7}
+  ];
   var size = 1;
   var picked = [];
   var cart = {}; // chave "tamanho|sabores" -> {size,flavors,price,qty}
@@ -294,7 +301,9 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     if(saved && typeof saved==='object'){
       Object.keys(saved).forEach(function(k){
         var it = saved[k];
-        if(it && Array.isArray(it.flavors) && SIZES.indexOf(it.size)>-1 && it.qty>0){
+        var dr = it && it.drink && DRINKS.filter(function(d){return d.n===it.name})[0];
+        if(dr && it.qty>0){ cart[k] = {drink:true, name:dr.n, price:dr.p, qty:it.qty}; }
+        else if(it && Array.isArray(it.flavors) && SIZES.indexOf(it.size)>-1 && it.qty>0){
           var si = SIZES.indexOf(it.size);
           it.price = Math.max.apply(null, it.flavors.map(function(f){return priceOf(f,si)})) + (it.flavors.length === 3 ? EXTRA3 : 0);
           cart[k] = it;
@@ -379,6 +388,23 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     paintMenu(); paintBuilder();
   });
 
+  /* bebidas */
+  function paintDrinks(){
+    $('drinks').innerHTML = '<div class="group"><h3>Bebidas</h3>' + DRINKS.map(function(d,i){
+      return '<div class="row"><span class="name">'+d.n+'</span><span class="dots"></span><span class="price">'+brl(d.p)+'</span>'+
+        '<button type="button" class="add" data-d="'+i+'">Adicionar</button></div>';
+    }).join('') + '</div>';
+  }
+  $('drinks').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-d]'); if(!b) return;
+    var d = DRINKS[+b.dataset.d], k = 'bebida|'+d.n;
+    var it = cart[k] || {drink:true, name:d.n, price:d.p, qty:0};
+    it.qty += 1; cart[k] = it; persist(); paintCart();
+    say(d.n+' adicionada ao pedido. Toque em Ver pedido quando terminar.');
+    b.textContent = 'Adicionado ✓'; b.setAttribute('aria-pressed','true');
+    setTimeout(function(){ b.textContent = 'Adicionar'; b.removeAttribute('aria-pressed'); }, 1200);
+  });
+
   /* montagem da pizza */
   function pickedPrice(){
     var base = Math.max.apply(null, picked.map(function(f){return priceOf(f,size)}));
@@ -411,19 +437,19 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     var it = cart[k] || {size:SIZES[size], flavors:picked.slice(), price:pickedPrice(), qty:0};
     it.qty += 1; cart[k] = it;
     picked = []; persist();
-    say('Pizza adicionada ao pedido. Escolha outra ou toque em Ver pedido.');
+    say('Pizza adicionada ao pedido. Escolha outra, uma bebida ou toque em Ver pedido.');
     paintMenu(); paintBuilder(); paintCart();
   };
 
   /* carrinho */
   function totals(){
-    var n=0, sub=0;
-    Object.keys(cart).forEach(function(k){ n+=cart[k].qty; sub+=cart[k].qty*cart[k].price; });
-    return {n:n, sub:sub, tot: n? sub+FEE : 0};
+    var n=0, sub=0, pz=0, bb=0;
+    Object.keys(cart).forEach(function(k){ var c=cart[k]; n+=c.qty; sub+=c.qty*c.price; if(c.drink) bb+=c.qty; else pz+=c.qty; });
+    return {n:n, pz:pz, bb:bb, sub:sub, tot: n? sub+FEE : 0};
   }
   function paintCart(){
     var t = totals();
-    $('barSum').innerHTML = t.n ? '<b>'+t.n+(t.n>1?' pizzas':' pizza')+'</b> · '+brl(t.tot)+' com entrega' : 'Seu pedido está vazio';
+    $('barSum').innerHTML = t.n ? '<b>'+[t.pz?t.pz+(t.pz>1?' pizzas':' pizza'):'', t.bb?t.bb+(t.bb>1?' bebidas':' bebida'):''].filter(Boolean).join(' + ')+'</b> · '+brl(t.tot)+' com entrega' : 'Seu pedido está vazio';
     $('openCart').disabled = !t.n;
     $('tSub').textContent = brl(t.sub);
     $('tFee').textContent = brl(t.n?FEE:0);
@@ -431,11 +457,13 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     var ks = Object.keys(cart);
     $('lines').innerHTML = ks.length ? ks.map(function(k){
       var it = cart[k];
-      var n = it.flavors.length;
-      return '<div class="line"><div class="t">Pizza '+it.size+'<small>'+it.flavors.join(' + ')+(n>1?' ('+n+' sabores)':'')+' · '+brl(it.price)+'</small></div>'+
-        '<div class="step"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Remover uma pizza">−</button><output>'+it.qty+'</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Adicionar mais uma pizza">+</button></div>'+
+      var n = it.drink ? 0 : it.flavors.length;
+      var title = it.drink ? it.name : 'Pizza '+it.size;
+      var sub = it.drink ? brl(it.price) : it.flavors.join(' + ')+(n>1?' ('+n+' sabores)':'')+' · '+brl(it.price);
+      return '<div class="line"><div class="t">'+title+'<small>'+sub+'</small></div>'+
+        '<div class="step"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Remover um">−</button><output>'+it.qty+'</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Adicionar mais um">+</button></div>'+
         '<span class="p">'+brl(it.qty*it.price)+'</span></div>';
-    }).join('') : '<p class="empty">Nenhuma pizza ainda. Volte ao cardápio e escolha seus sabores.</p>';
+    }).join('') : '<p class="empty">Nada no pedido ainda. Volte ao cardápio e escolha seus sabores.</p>';
     if(!ks.length) closeCart();
   }
   $('lines').addEventListener('click', function(e){
@@ -460,7 +488,7 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     $('trocoBox').hidden = v!=='Dinheiro';
   });
   $('copyPix').onclick = function(){
-    var done = function(){ $('copyPix').textContent = 'Chave copiada'; setTimeout(function(){ $('copyPix').textContent='Copiar chave Pix'; },2200); };
+    var done = function(){ $('copyPix').textContent = 'Chave copiada'; setTimeout(function(){ $('copyPix').textContent='Copiar chave'; },2200); };
     function fallback(){
       var ta = document.createElement('textarea'); ta.value = PIX; document.body.appendChild(ta); ta.select();
       try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta);
@@ -481,7 +509,8 @@ input.err{border-color:var(--tomato);background:#fff3f0}
 
     var L = ['*Novo pedido – Delivery Pizza Top*',''];
     Object.keys(cart).forEach(function(k){
-      var it = cart[k], n = it.flavors.length;
+      var it = cart[k], n = it.drink ? 0 : it.flavors.length;
+      if(it.drink){ L.push(it.qty+'x '+it.name+' – '+brl(it.qty*it.price)); return; }
       L.push(it.qty+'x Pizza '+it.size+(n>1?' ('+n+' sabores)':'')+': '+it.flavors.join(' + ')+' – '+brl(it.qty*it.price));
     });
     L.push('', 'Subtotal: '+brl(t.sub), 'Taxa de entrega: '+brl(FEE), '*Total: '+brl(t.tot)+'*', '');
@@ -498,7 +527,7 @@ input.err{border-color:var(--tomato);background:#fff3f0}
     window.open(url, '_blank', 'noopener');
   });
 
-  paintSizes(); paintMenu(); paintBuilder(); paintCart();
+  paintSizes(); paintMenu(); paintDrinks(); paintBuilder(); paintCart();
 })();
 </script>
 </body>
